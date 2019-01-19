@@ -1,0 +1,12 @@
+{
+  "name": "izukampusbot",
+  "version": "0.0.1",
+  "description": "a scrapper bot for izu kampus website",
+  "main": "index.js",
+  "repository": "git@github.com:bilalunalnet/izukampusbot.git",
+  "author": "Bilal Ünal <admin@bilalunal.net>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "puppeteer": "^1.11.0"
+  }
+}
