@@ -41,9 +41,14 @@ async function getExamResults(page) {
     let allResults = [];
     for (let i = 0; i < examResultCount; i++) {
         let resultTableSelector = selectors.RESULT_HIDDEN_TABLE_SELECTOR.replace("(INDEX)", i);
-        resultTableSelector += selectors.RESULT_HIDDEN_TABLE_TBODY_SELECTOR;
+        let resultTableTbodySelector = resultTableSelector + selectors.RESULT_HIDDEN_TABLE_TBODY_SELECTOR;
+        let lectureNameSelector = selectors.RESULT_LECTURE_NAME.replace("INDEX", (i * 3) + 1)
 
-        allResults[i] = await page.evaluate((sel) => {
+        let lectureName = await page.evaluate((lectureNameSelector) => {
+            return document.querySelector(lectureNameSelector).innerText;
+        }, lectureNameSelector);
+
+        allResults[lectureName] = await page.evaluate((sel) => {
             let exams = Array.from(document.querySelector(sel).children);
             let results = [];
             exams.forEach(function(exam) {
@@ -54,10 +59,8 @@ async function getExamResults(page) {
                 });
             });
             return results;
-        }, resultTableSelector);
+        }, resultTableTbodySelector);
     }
-
-    console.log(allResults);
 }
 
 run();

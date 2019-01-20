@@ -6,5 +6,6 @@ module.exports = {
     EXAM_RESULTS_BUTTON_SELECTOR: "#nav > li:nth-child(2) > ul > li:nth-child(6) > a",
     EXAM_RESULTS_TABLE_SELECTOR: "#DersDonemParcaView > div > div > div > div.widget-content > table > tbody",
     RESULT_HIDDEN_TABLE_SELECTOR: "#tr_nt_id(INDEX)",
-    RESULT_HIDDEN_TABLE_TBODY_SELECTOR: " td > div > ul > li:nth-child(2) > table > tbody"
+    RESULT_HIDDEN_TABLE_TBODY_SELECTOR: " td > div > ul > li:nth-child(2) > table > tbody",
+    RESULT_LECTURE_NAME: "#DersDonemParcaView > div > div > div > div.widget-content > table > tbody > tr:nth-child(INDEX) > td:nth-child(2)"
 }
