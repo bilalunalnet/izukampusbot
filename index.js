@@ -15,6 +15,10 @@ async function run() {
     await login(page);
 
     await getAndWriteExamResults(page);
+
+    await browser.close();
+
+    process.exit();
 }
 
 async function login(page) {
@@ -28,10 +32,11 @@ async function login(page) {
 
     await page.waitForNavigation({ waitUntil: 'networkidle0' });
 
-    console.log("giriş yapıldı");
+    console.log(" > Logged in.");
 }
 
 async function getAndWriteExamResults(page) {
+    console.log(" > Checking for new results.");
     await page.click(selectors.EXAM_RESULTS_BUTTON_SELECTOR);
     await page.waitForSelector(selectors.EXAMS_PAGE_SELECTOR);
 
