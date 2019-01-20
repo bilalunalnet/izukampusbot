@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const credentials = require('./credentials');
+const selectors = require('./selectors');
 
 async function run() {
     const browser = await puppeteer.launch({
@@ -16,17 +17,13 @@ async function run() {
 }
 
 async function login(page) {
-    const USERNAME_SELECTOR = "#user_name";
-    const PASSWORD_SELECTOR = "#user_pas";
-    const SUBMIT_BUTTON_SELECTOR = "#LoginForm > div:nth-child(6) > button";
-
-    await page.click(USERNAME_SELECTOR);
+    await page.click(selectors.USERNAME_SELECTOR);
     await page.keyboard.type(credentials.username);
 
-    await page.click(PASSWORD_SELECTOR);
+    await page.click(selectors.PASSWORD_SELECTOR);
     await page.keyboard.type(credentials.password);
 
-    await page.click(SUBMIT_BUTTON_SELECTOR);
+    await page.click(selectors.SUBMIT_BUTTON_SELECTOR);
 
     await page.waitForNavigation({ waitUntil: 'networkidle0' });
 
@@ -34,21 +31,17 @@ async function login(page) {
 }
 
 async function getExamResults(page) {
-    const EXAM_RESULTS_BUTTON_SELECTOR = "#nav > li:nth-child(2) > ul > li:nth-child(6) > a";
-    const EXAM_RESULTS_TABLE_SELECTOR = "#DersDonemParcaView > div > div > div > div.widget-content > table > tbody";
-    const RESULT_HIDDEN_TABLE_SELECTOR = "#tr_nt_id(INDEX)";
-
-    await page.click(EXAM_RESULTS_BUTTON_SELECTOR);
-    await page.waitForSelector('#DersDonemParcaView > div > div > div > div.widget-header > h4');
+    await page.click(selectors.EXAM_RESULTS_BUTTON_SELECTOR);
+    await page.waitForSelector(selectors.EXAMS_PAGE_SELECTOR);
 
     const examResultCount = await page.evaluate((sel) => {
         return document.querySelector(sel).childElementCount / 3;
-    }, EXAM_RESULTS_TABLE_SELECTOR)
+    }, selectors.EXAM_RESULTS_TABLE_SELECTOR)
     
     let allResults = [];
     for (let i = 0; i < examResultCount; i++) {
-        let resultTableSelector = RESULT_HIDDEN_TABLE_SELECTOR.replace("(INDEX)", i);
-        resultTableSelector += " td > div > ul > li:nth-child(2) > table > tbody";
+        let resultTableSelector = selectors.RESULT_HIDDEN_TABLE_SELECTOR.replace("(INDEX)", i);
+        resultTableSelector += selectors.RESULT_HIDDEN_TABLE_TBODY_SELECTOR;
 
         allResults[i] = await page.evaluate((sel) => {
             let exams = Array.from(document.querySelector(sel).children);
@@ -63,6 +56,8 @@ async function getExamResults(page) {
             return results;
         }, resultTableSelector);
     }
+
+    console.log(allResults);
 }
 
 run();
