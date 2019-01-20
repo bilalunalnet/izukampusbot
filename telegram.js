@@ -3,6 +3,6 @@ const credentials = require('./credentials');
 
 const bot = new TelegramBot(credentials.telegram_bot_token, {polling: true});
 
-module.exports = {
-    bot
-}
+bot.onText(/\/check (.+)/, (msg, match) => {
+    // TODO: start puppeteer with telegram /check command
+});
