@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const credentials = require('./credentials');
+const telegram = require('./telegram');
 
 let con = mysql.createConnection({
     host: credentials.database_host,

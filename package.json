@@ -8,6 +8,7 @@
   "license": "GPL-3.0",
   "dependencies": {
     "mysql": "^2.16.0",
+    "node-telegram-bot-api": "^0.30.0",
     "puppeteer": "^1.11.0"
   }
 }

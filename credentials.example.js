@@ -5,4 +5,5 @@ module.exports = {
     database_username: 'username',
     database_user_password: 'password',
     database_table: 'izukampusbot',
+    telegram_bot_token: 'TOKEN'
 }
