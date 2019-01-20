@@ -1,10 +1,11 @@
 const puppeteer = require('puppeteer');
 const credentials = require('./credentials');
 const selectors = require('./selectors');
+const database = require('./database');
 
 async function run() {
     const browser = await puppeteer.launch({
-        headless: false
+        //headless: false
     })
 
     const page = await browser.newPage();
@@ -13,7 +14,7 @@ async function run() {
 
     await login(page);
 
-    await getExamResults(page);
+    await getAndWriteExamResults(page);
 }
 
 async function login(page) {
@@ -30,7 +31,7 @@ async function login(page) {
     console.log("giriş yapıldı");
 }
 
-async function getExamResults(page) {
+async function getAndWriteExamResults(page) {
     await page.click(selectors.EXAM_RESULTS_BUTTON_SELECTOR);
     await page.waitForSelector(selectors.EXAMS_PAGE_SELECTOR);
 
@@ -38,7 +39,6 @@ async function getExamResults(page) {
         return document.querySelector(sel).childElementCount / 3;
     }, selectors.EXAM_RESULTS_TABLE_SELECTOR)
     
-    let allResults = [];
     for (let i = 0; i < examResultCount; i++) {
         let resultTableSelector = selectors.RESULT_HIDDEN_TABLE_SELECTOR.replace("(INDEX)", i);
         let resultTableTbodySelector = resultTableSelector + selectors.RESULT_HIDDEN_TABLE_TBODY_SELECTOR;
@@ -48,7 +48,7 @@ async function getExamResults(page) {
             return document.querySelector(lectureNameSelector).innerText;
         }, lectureNameSelector);
 
-        allResults[lectureName] = await page.evaluate((sel) => {
+        let allResults = await page.evaluate((sel) => {
             let exams = Array.from(document.querySelector(sel).children);
             let results = [];
             exams.forEach(function(exam) {
@@ -60,7 +60,15 @@ async function getExamResults(page) {
             });
             return results;
         }, resultTableTbodySelector);
+
+        writeResultsToDB(lectureName, allResults);
     }
+}
+
+function writeResultsToDB(lectureName, results) {
+    results.forEach(function(result) {
+        database.addNewResult(lectureName, result["name"], result['grade']);
+    });
 }
 
 run();
